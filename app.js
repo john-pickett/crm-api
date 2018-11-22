@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 const { mongoose } = require('./db/mongoose');
+const { Contact } = require('./models/Contact');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -22,4 +23,40 @@ app.use(function(req, res, next) {
 app.get('/', (req, res) => {
     console.log('/ get');
     res.send('server running');
-})
+});
+
+app.get('/contacts', (req, res) => {
+    Contact.find().then((contacts) => {
+        res.send({contacts});
+    });
+}, (e) => {
+    res.status(400).send(e);
+});
+
+app.post('/contact', (req, res) => {
+    const contact = new Contact({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        phone: req.body.phone,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        city: req.body.city,
+        state: req.body.state,
+        zip: req.body.zip,
+        spouseName: req.body.spouseName,
+        children: req.body.children,
+        birthday: req.body.birthday,
+        spouseBirthday: req.body.spouseBirthday,
+        howWeMet: req.body.howWeMet,
+        notes: req.body.notes,
+        customerStatus: req.body.customerStatus,
+        purchaseHistory: req.body.purchaseHistory
+    });
+
+    contact.save().then((doc) => {
+        res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+    })
+});
