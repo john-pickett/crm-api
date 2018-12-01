@@ -26,8 +26,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/contacts', (req, res) => {
+    let missingBirthdays = []
     Contact.find().then((contacts) => {
-        res.send({contacts});
+        contacts.forEach((item) => {
+            if (!item.birthday) {
+                missingBirthdays.push(item);
+            }
+            
+        })
+        res.send({contacts, missingBirthdays});
     });
 }, (e) => {
     res.status(400).send(e);
