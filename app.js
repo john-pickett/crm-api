@@ -72,7 +72,8 @@ app.post('/contact', (req, res) => {
 app.put('/contact/:id', (req, res) => {
     // edit contact here
     const id = req.params.id;
-    const contact = {
+
+    Contact.findOneAndUpdate({_id: id}, {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
@@ -90,9 +91,10 @@ app.put('/contact/:id', (req, res) => {
         notes: req.body.notes,
         customerStatus: req.body.customerStatus,
         purchaseHistory: req.body.purchaseHistory
-    }
-
-    Contact.findOneAndUpdate({_id: id}, {contact: contact},  {new: true}).then((doc) => res.send(doc))
+    },  
+    {
+        new: true
+    }).then((doc) => res.send(doc))
 
 });
 /*
