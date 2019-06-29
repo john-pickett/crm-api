@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const contactSchema = Schema({
     firstName: {
@@ -54,9 +54,18 @@ const contactSchema = Schema({
     },
     purchaseHistory: {
         type: String
-    }
+    },
+    connections: [{ type: Schema.Types.ObjectId, ref: 'Connection'}]
+})
+
+/*
+const personSchema = Schema({
+  _id: Schema.Types.ObjectId,
+  name: String,
+  age: Number,
+  stories: [{ type: Schema.Types.ObjectId, ref: 'Story' }]
 });
+*/
 
-const Contact = mongoose.model('Contact', contactSchema);
-
-module.exports = { Contact };
+const Contact = mongoose.model('Contact', contactSchema)
+module.exports = { Contact }
