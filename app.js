@@ -74,7 +74,7 @@ app.put('/contact/:id', (req, res) => {
     const id = req.params.id;
     const contact = req.body.contact;
 
-    Contact.findOneAndUpdate({_id: id}, {contact: contact}, {new: true}),then((doc) => res.send(doc))
+    Contact.findOneAndUpdate({_id: id}, {contact: contact},  {new: true}),then((doc) => res.send(doc))
 
 });
 /*
