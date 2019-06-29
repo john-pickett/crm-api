@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 const { mongoose } = require('./db/mongoose');
 const { Contact } = require('./models/Contact');
-const { Connection } = require('./models/Connection');
+//const { Connection } = require('./models/Connection');
 
 const app = express();
 const port = process.env.PORT || 8080;
