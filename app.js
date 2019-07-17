@@ -22,12 +22,13 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', (req, res) => {
-    console.log('/ get');
+    // console.log('/ get');
     res.send('server running');
 });
 
 app.get('/contacts', (req, res) => {
-    let missingBirthdays = []
+    console.log('getting contacts...');
+    let missingBirthdays = [];
     Contact.find().then((contacts) => {
         contacts.forEach((item) => {
             if (!item.birthday) {
@@ -42,6 +43,7 @@ app.get('/contacts', (req, res) => {
 });
 
 app.post('/contact', (req, res) => {
+    console.log('adding new contact to DB...')
     const contact = new Contact({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -70,9 +72,10 @@ app.post('/contact', (req, res) => {
 });
 
 app.put('/contact/:id', (req, res) => {
-    // edit contact here
+    console.log('editing contact...');
     const id = req.params.id;
 
+    // console.log('editing...' + id)
     Contact.findOneAndUpdate({_id: id}, {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -94,7 +97,10 @@ app.put('/contact/:id', (req, res) => {
     },  
     {
         new: true
-    }).then((doc) => res.send(doc))
+    }).then((doc) => {
+        console.log('done editing...')
+        res.send(doc)
+    })
 
 });
 /*
