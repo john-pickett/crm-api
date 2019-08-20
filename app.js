@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 const { mongoose } = require('./db/mongoose');
 const { Contact } = require('./models/Contact');
-//const { Connection } = require('./models/Connection');
+const { Connection } = require('./models/Connection');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -28,18 +28,28 @@ app.get('/', (req, res) => {
 
 app.get('/contacts', (req, res) => {
     console.log('getting contacts...');
-    let missingBirthdays = [];
-    Contact.find().then((contacts) => {
-        contacts.forEach((item) => {
-            if (!item.birthday) {
-                missingBirthdays.push(item);
-            }
+    // let missingBirthdays = [];
+    Contact.find().populate('connections').then((contacts) => {
+        // contacts.forEach((item) => {
+        //     if (!item.birthday) {
+        //         missingBirthdays.push(item);
+        //     }
             
-        })
-        res.send({contacts, missingBirthdays});
+        // })
+        res.send({contacts});
     });
 }, (e) => {
     res.status(400).send(e);
+});
+
+app.get('/contacts/:id', (req, res) => {
+    const id = req.params.id;
+
+    Contact.findById(id).then((doc) => {
+        res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+    });
 });
 
 app.post('/contact', (req, res) => {
@@ -93,7 +103,8 @@ app.put('/contact/:id', (req, res) => {
         howWeMet: req.body.howWeMet,
         notes: req.body.notes,
         customerStatus: req.body.customerStatus,
-        purchaseHistory: req.body.purchaseHistory
+        purchaseHistory: req.body.purchaseHistory,
+        connections: req.body.connections
     },  
     {
         new: true
@@ -103,6 +114,13 @@ app.put('/contact/:id', (req, res) => {
     })
 
 });
+
+app.get('/connections', (req, res) => {
+    Connection.find().populate('contact').then((connections) => {
+        res.send({connections})
+    }, e => res.status(400).send(e))
+});
+
 /*
 app.put('/tasks/edit/:id', (req, res) => {
     let id = req.params.id;
@@ -118,6 +136,30 @@ app.put('/tasks/edit/:id', (req, res) => {
 
 // Connection is for a meeting/conversation with a Contact
 app.post('/connection', (req, res) => {
-    // const contact = req.body._id
-    // contact.find().then(())
-})
+    console.log('adding new connection...');
+    const connection = new Connection({
+        connection_dt: 'Mon Aug 19 2019 18:36:23 GMT-0500 (Central Daylight Time)',
+        contact: '5d338aff289ca16900a32ad8'
+    });
+
+    connection.save().then((doc) => {
+        res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+    })
+
+});
+
+/*
+
+console.log('adding new contact to DB...')
+    const contact = new Contact({
+        firstName: req.body.firstName,
+    });
+
+    contact.save().then((doc) => {
+        res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+    })
+    */
